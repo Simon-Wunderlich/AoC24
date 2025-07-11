@@ -13,8 +13,9 @@ namespace main
 		{
 			Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAA");
 			string textFile = "../../../input.txt";
-			string text = File.ReadAllText(textFile);
-			string pattern = "mul\\(\\d{1,3},\\d{1,33}\\)";
+			string text = File.ReadAllText(textFile).Replace("\n", "");
+			text = removeDisabledCommands(text);
+			string pattern = @"mul\(\d{1,3},\d{1,33}\)";
 			Regex rg = new Regex(pattern);
 			MatchCollection validMults = rg.Matches(text);
 			int total = 0;
@@ -31,6 +32,13 @@ namespace main
 			MatchCollection numbers = rg.Matches(text);
 
 			return Int32.Parse(numbers.First().Value) * Int32.Parse(numbers.Last().Value);
+		}
+
+		static string removeDisabledCommands(string text)
+		{
+			string pattern = @"don't\(\)(.+?)(do\(\)|$)";
+			Regex rg = new Regex(pattern);
+			return rg.Replace(text, "");
 		}
 	}
 }
