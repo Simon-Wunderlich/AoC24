@@ -6,7 +6,7 @@ inputArr = inputStr.split("\n")
 total = 0
 
 def isValid(txt):
-    if txt == "XMAS" or txt == "SAMX":
+    if txt == "MAS" or txt == "SAM":
         return True
     return False
 
@@ -31,16 +31,22 @@ def checkVert(lineNum, charNum, direction):
         pass
     return 0
 
-def checkDiag(lineNum, charNum, xDir, yDir):
-    if lineNum + 3*yDir < 0:
+def checkCross(lineNum, charNum):
+    if lineNum - 1 < 0:
         return 0
-    if charNum + 3*xDir < 0:
+    if charNum - 1 < 0:
         return 0
     try:
-        line = ""
-        for x in range(4):
-                line += inputArr[lineNum + x*yDir][charNum + x*xDir]
-        if isValid("".join(line)):
+        line1 = ""
+        line1 += inputArr[lineNum + 1][charNum -1]
+        line1 += "A"
+        line1 += inputArr[lineNum - 1][charNum +1]
+
+        line2 = ""
+        line2 += inputArr[lineNum - 1][charNum -1]
+        line2 += "A"
+        line2 += inputArr[lineNum + 1][charNum +1]
+        if isValid(line1) and isValid(line2):
             return 1
     except:
         pass
@@ -51,15 +57,8 @@ for lineNum in range(len(inputArr)):
     line = inputArr[lineNum]
     for charNum in range(len(line)):
         char = line[charNum]
-        if char != "X":
+        if char != "A":
             continue
-        total += checkHor(lineNum, charNum, 1)
-        total += checkHor(lineNum, charNum, -1)
-        total += checkVert(lineNum, charNum, 1)
-        total += checkVert(lineNum, charNum, -1)
-        total += checkDiag(lineNum, charNum, 1, 1)
-        total += checkDiag(lineNum, charNum, 1, -1)
-        total += checkDiag(lineNum, charNum, -1, 1)
-        total += checkDiag(lineNum, charNum, -1, -1)
+        total += checkCross(lineNum, charNum)
 
 print(total)
