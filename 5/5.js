@@ -32,6 +32,19 @@ function verifySequence(seq, map) {
     return true;
 }
 
+function sort(seq, map) {
+    for (i = 0; i < seq.length; i++) {
+        for (j = i; j < seq.length; j++) {
+            if (!(seq[j] in map))
+                continue;
+            if (map[seq[j]].includes(seq[i])) {
+                [seq[i], seq[j]] = [seq[j], seq[i]];
+            }
+        }
+    }
+    return seq;
+}
+
 function findMiddle(arr) {
     return Number(arr[Math.floor(arr.length/2)])
 }
@@ -43,8 +56,10 @@ function main(inputStr) {
     updates = inputArr[1].split("\r\n");
     total = 0;
     for (x of updates) {
-        if (verifySequence(x.split(","), ruleMap))
-            total += findMiddle(x.split(",")); 
+        if (!verifySequence(x.split(","), ruleMap)) {
+            sorted = sort(x.split(","), ruleMap);
+            total += findMiddle(sorted);
+        }
     }
     console.log(total);
 }
