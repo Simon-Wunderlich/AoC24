@@ -28,8 +28,11 @@ public class Main {
             for (int j = 0; j < patterns.get(i).length; j++) {
                 if (patterns.get(i)[j] == '*')
                     total *= Long.parseLong(vals[j+1]);
-                else
+                else if  (patterns.get(i)[j] == '+')
                     total += Long.parseLong(vals[j+1]);
+                else
+                    total = Long.parseLong(String.format("%d%s",total,vals[j+1]));
+
             }
             if (total == target)
                 return target;
@@ -47,6 +50,9 @@ public class Main {
         findPatterns(length, newLine, charNum+1);
 
         newLine[charNum] = '*';
+        findPatterns(length, newLine, charNum+1);
+
+        newLine[charNum] = '|';
         findPatterns(length, newLine, charNum+1);
 
     }
