@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 
 public class Main {
-    static ArrayList<char[]> patterns = new ArrayList<>();
+    static boolean isValid = false;
     public static void main(String[] args) throws IOException {
         File input = new File("input.txt");
         Scanner scnr = new Scanner(input);
@@ -21,39 +21,29 @@ public class Main {
         System.out.println(total);
     }
     static long validate(long target, String[] vals) {
-        patterns = new ArrayList<>();
-        findPatterns(vals.length-1, new char[vals.length-1], 0);
-        for(int i = 0; i < patterns.size(); i++) {
-            long total = Long.parseLong(vals[0]);
-            for (int j = 0; j < patterns.get(i).length; j++) {
-                if (patterns.get(i)[j] == '*')
-                    total *= Long.parseLong(vals[j+1]);
-                else if  (patterns.get(i)[j] == '+')
-                    total += Long.parseLong(vals[j+1]);
-                else
-                    total = Long.parseLong(String.format("%d%s",total,vals[j+1]));
-
-            }
-            if (total == target)
-                return target;
-        }
+        isValid = false;
+        findPatterns(vals.length, Long.parseLong(vals[0]), target, 1, vals);
+        if (isValid)
+            return target;
         return 0;
     }
-    static void findPatterns(int length, char[] line, int charNum) {
-        char[] newLine = String.copyValueOf(line).toCharArray();
+    static void findPatterns(int length, long total, long target, int charNum, String[] vals) {
         if (charNum == length) {
-            patterns.add(newLine);
+            if (total == target)
+                isValid = true;
             return;
         }
+        if (isValid)
+            return;
 
-        newLine[charNum] = '+';
-        findPatterns(length, newLine, charNum+1);
+        long newTotal = total + Long.parseLong(vals[charNum]);
+        findPatterns(length, newTotal, target, charNum+1, vals);
 
-        newLine[charNum] = '*';
-        findPatterns(length, newLine, charNum+1);
+        newTotal = total * Long.parseLong(vals[charNum]);
+        findPatterns(length, newTotal, target, charNum+1, vals);
 
-        newLine[charNum] = '|';
-        findPatterns(length, newLine, charNum+1);
+        newTotal = Long.parseLong(String.format("%d%s",total,vals[charNum]));
+        findPatterns(length, newTotal, target, charNum+1, vals);
 
     }
 }
