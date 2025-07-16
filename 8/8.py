@@ -27,18 +27,35 @@ for y, line in enumerate(inputArr):
             positions.update({char : [[x,y]]})
 
 for char in positions:
-    for pos1 in positions[char]:
-        for pos2 in positions[char]:
+    for posA in positions[char]:
+        for posB in positions[char]:
+            pos1 = posA
+            pos2 = posB
+
             if pos1 == pos2:
                 continue
-            antiNodeLocation = antiNodePos(pos2, pos1)
-            if antiNodeLocation in antiNodesPos:
-                continue
-            if antiNodeLocation[0] >= len(inputArr[0]) or antiNodeLocation[0] < 0:
-                continue
-            if antiNodeLocation[1] >= len(inputArr) or antiNodeLocation[1] < 0:
-                continue
-            antiNodesPos.append(antiNodeLocation)
+
+            if pos1 not in antiNodesPos:
+                    antiNodesPos.append(pos1)
+
+            if pos2 not in antiNodesPos:
+                    antiNodesPos.append(pos2)
+
+            inBounds = True
+            while inBounds:
+                antiNodeLocation = antiNodePos(pos2, pos1)
+                if antiNodeLocation in antiNodesPos:
+                    pos2 = pos1
+                    pos1 = antiNodeLocation
+                    continue
+                if antiNodeLocation[0] >= len(inputArr[0]) or antiNodeLocation[0] < 0:
+                    inBounds = False
+                    continue
+                if antiNodeLocation[1] >= len(inputArr) or antiNodeLocation[1] < 0:
+                    inBounds = False
+                    continue
+                antiNodesPos.append(antiNodeLocation)
+                pos2 = pos1
+                pos1 = antiNodeLocation
 
 print(len(antiNodesPos))
-
