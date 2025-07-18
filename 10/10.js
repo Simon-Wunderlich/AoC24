@@ -8,26 +8,26 @@ fs.readFile('input.txt', 'utf8', (err, data) => {
     main(data);
 });
 
-allPaths = []
+totalPaths = 0;
 function main(data) {
     inputArr = data.split("\r\n");
     for (i = 0; i < inputArr.length; i++) {
         for (j = 0; j < inputArr[i].length; j++) {
             if (inputArr[i][j] == "0")
-                traverse(j, i, inputArr, `${j},${i}`);
+                traverse(j, i, inputArr);
         }
     }
-    console.log(allPaths.length);
+    console.log(totalPaths);
 }
 
-function traverse(x, y, map, start) {
-    checkPos(x,y,x+1, y, map, start)
-    checkPos(x,y,x-1, y, map, start)
-    checkPos(x,y,x, y+1, map, start)
-    checkPos(x,y,x, y-1, map, start)
+function traverse(x, y, map) {
+    checkPos(x, y, x + 1, y, map)
+    checkPos(x, y, x - 1, y, map)
+    checkPos(x, y, x, y + 1, map)
+    checkPos(x, y, x, y - 1, map)
 }
 
-function checkPos(x1, y1, x2, y2, map, start) {
+function checkPos(x1, y1, x2, y2, map) {
     if (x2 >= map[0].length || x2 < 0) {
         return;
     }
@@ -40,8 +40,8 @@ function checkPos(x1, y1, x2, y2, map, start) {
         return;
     }
 
-    if (map[y2][x2] == "9" && !allPaths.includes(start + `:${x2},${y2}`))
-        allPaths.push(start+`:${x2},${y2}`);
+    if (map[y2][x2] == "9")
+        totalPaths++;
     else
-        traverse(x2, y2, map,start);
+        traverse(x2, y2, map);
 }
