@@ -1,26 +1,34 @@
-with open("11/input.txt") as f:
+import math
+from functools import cache
+
+with open("input.txt") as f:
     stoneArr = f.read().split(" ")
-def blink(stones):
-    i = 0
-    while i < len(stones):
-        if stones[i] == "0":
-            stones[i] = "1"
-            i+=1
-            continue
-        if len(stones[i]) % 2 != 0:
-            stones[i] = str(int(stones[i])*2024)
-            i+=1
-            continue
-        else:
-            rightHalf = str(int(stones[i][int(len(stones[i])/2):]))
-            leftHalf = str(int(stones[i][:int(len(stones[i])/2)]))
-            stones.pop(i)
-            stones.insert(i, rightHalf)
-            stones.insert(i, leftHalf)
-            i+=2
 
-    return stones
 
-for x in range(25):
-    stoneArr = blink(stoneArr)
-print(len(stoneArr))
+@cache
+def blink(stone, depth):
+    global stoneCount
+    if (depth == 76):
+        return 1
+    if stone == 0:
+        stone = 1
+        return blink(stone, depth + 1)
+
+    orderMag = math.ceil(math.log(stone+0.1,10))
+    if orderMag % 2 != 0:
+        stone = stone*2024
+        return blink(stone, depth + 1)
+    else:
+        cut = stone / math.pow(10, orderMag/2)
+
+        left = math.floor(cut)
+
+        right = round((cut - left)*math.pow(10, orderMag/2))
+
+        return blink(right, depth + 1) + blink(left, depth + 1)
+
+stoneCount = 0
+for x in stoneArr:
+    stoneCount += blink(int(x),1)
+print(stoneCount)
+
