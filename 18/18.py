@@ -2,14 +2,14 @@ from collections import deque
 
 X_BOUNDS = 70
 Y_BOUNDS = 70
-NUM_BYTES = 1024
+START_NUM_BYTES = 1024
 with open("18/input.txt") as f:
-    byteList = f.read().split()[0:NUM_BYTES]
+    completebyteList = f.read().split()
 
-def bfs():
+def bfs(byteList):
     queue = deque()
     queue.append([0 ,0,0])
-    points = {}
+    points = {f"{X_BOUNDS},{Y_BOUNDS}":float('inf')}
     while(queue):
         current = queue.popleft()
         x = current[0]
@@ -35,4 +35,14 @@ def bfs():
 
     return points[f"{X_BOUNDS},{Y_BOUNDS}"]
 
-print(bfs())
+
+low = START_NUM_BYTES
+high = len(completebyteList)-1
+while high > low+1:
+    index = int((low + high)/2)
+    steps = bfs(completebyteList[0:index])
+    if steps != float('inf'):
+        low = index
+    else:
+        high = index
+print(completebyteList[index-1])
