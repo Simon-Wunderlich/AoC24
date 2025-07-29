@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <vector>
-#include <ranges>
+#include <map>
 
 std::vector<std::string> split(std::string input, std::string delimiter){
 
@@ -22,19 +22,24 @@ std::vector<std::string> split(std::string input, std::string delimiter){
     return tokens;
 }
 
-bool dfs(std::string str, std::string target, std::vector<std::string> towels, std::vector<std::string> & memo) {
-    if (str == target)
-        return true;
-    if (find(memo.begin(), memo.end(), str) != memo.end())
-        return false;
+void dfs(std::string str, std::string target, std::vector<std::string> towels, std::map<std::string,long> & memo, long & count) {
+    if (memo.count(str) == 1) {
+        count += memo[str];
+        return;
+    }
+    if (str == target) {
+        count++;
+        return;
+    }
     for (std::string s : towels) {
         if (target.substr(0,str.length() + s.length()) == str+s) {
-            if (dfs(str+s, target, towels, memo))
-                return true;
-            memo.push_back(str+s);
+            long temp = count;
+            dfs(str+s, target, towels, memo, count);
+            if (temp != count || count == 0) {
+                memo[str+s] = count-temp;
+            }
         }
     }
-    return false;
 }
 
 
@@ -48,12 +53,14 @@ int main() {
     std::vector<std::string> towelList = split(towelStr, ", ");
 
     std::getline(inputFile, inputLine);
-    int count = 0;
+    long count = 0;
 
-    std::vector<std::string> memo;
+    std::map<std::string,long> memo;
     while (std::getline(inputFile, inputLine)) {
         memo = {};
-        count += dfs("", inputLine , towelList, memo) ? 1 : 0;
+        long _count = 0;
+        dfs("", inputLine , towelList, memo, _count);
+        count+=_count;
     }
     std::cout << count << std::endl;
 }
